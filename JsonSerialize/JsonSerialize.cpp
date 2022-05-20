@@ -82,6 +82,8 @@ private:
 	 cChar LineAnnotationMark = '/';
 	 cChar MiddleSplitMarkEnd = ']';
 	 cChar BigSplitMarkEnd = '}';
+	 cChar EscapeMark = '\\';
+	 cChar StringMark = '\"';
 
 	 //const char KeyChunkStart = '{';
 	 //const char KeyVectorStart = '[';
@@ -283,7 +285,14 @@ private:
 		 unordered_set<char>* FindTarget = IsKey ? &FindSplitMark : &FindSplitMarkEnd;
 		 int BeginPos = ReadPositon;
 		 int KeyLong = 0;
-		 for (; ReadPositon < Target.size() && FindTarget->find(Target[ReadPositon]) == FindTarget->end(); ++ReadPositon, ++KeyLong);
+		 bool StartString = Target[ReadPositon] == StringMark ? true: false;// "xx" 里的符号全部忽略 注意 转义 \\//
+		 
+		 for (; StartString || (Target.size() && FindTarget->find(Target[ReadPositon]) == FindTarget->end()); ++KeyLong)
+		 {
+			 ++ReadPositon;
+			 if (Target[ReadPositon] == StringMark && (ReadPositon - 1 >= 0 && Target[ReadPositon - 1] != EscapeMark))
+				 StartString = false;
+		 }
 		 *out_KeyName = Target.substr(BeginPos, KeyLong);
 		 return Target[ReadPositon] != MiddleSplitMarkEnd;
 	 }
