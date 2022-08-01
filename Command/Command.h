@@ -10,13 +10,7 @@ typedef void(*Function)(const string&);
 static class Command
 {
 public:
-	static void callFunciton(const string& FuntionName, const string& Args) {
-		auto finder = FuntionList.find(FuntionName);
-		if (finder != FuntionList.end())
-		{
-			finder->second(Args);
-		}
-	}
+	static void callFunciton(const string& Funtion);
 
 private:
 	static map<string, Function>FuntionList;
